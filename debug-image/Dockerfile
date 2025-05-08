@@ -76,4 +76,4 @@ RUN apt-get clean -qq -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set container to run sleep to use for debug
-CMD ["sleep", "infinity"]
+CMD ["sh", "-c", "echo Received args: $@; sleep infinity"]
