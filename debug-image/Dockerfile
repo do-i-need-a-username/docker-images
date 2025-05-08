@@ -1,5 +1,5 @@
 # The debian:latest tag will always point the latest stable release of debian
-ARG BASE_IMAGE=debian:latest
+ARG BASE_IMAGE=debian:stable
 FROM ${BASE_IMAGE}
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -63,15 +63,17 @@ ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
 # lightweight and portable command-line YAML, JSON and XML processor. yq uses jq like syntax but works with yaml files as well as json, xml, properties, csv and tsv.
 RUN go install github.com/mikefarah/yq/v4@latest
 
-
-# Instal mongo lcient
-RUN wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc \
-    | tee /etc/apt/trusted.gpg.d/server-7.0.asc && \
-    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" \
-    | tee /etc/apt/sources.list.d/mongodb-org-7.0.list && \
-    apt-get update -y && apt-get install -y mongodb-mongosh
+# # Instal mongo lcient
+# RUN wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc \
+#     | tee /etc/apt/trusted.gpg.d/server-7.0.asc && \
+#     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" \
+#     | tee /etc/apt/sources.list.d/mongodb-org-7.0.list && \
+#     apt-get update -y && apt-get install -y mongodb-mongosh
 
 RUN apt-get clean -qq -y && \
     apt-get autoclean -qq -y && \
     apt-get autoremove -qq -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Set container to run sleep to use for debug
+CMD ["sleep", "infinity"]
