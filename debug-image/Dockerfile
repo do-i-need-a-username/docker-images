@@ -75,5 +75,8 @@ RUN apt-get clean -qq -y && \
     apt-get autoremove -qq -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN mkdir -p /etc/loki/config && \
+    touch /etc/loki/config/config.yaml && \
+    chmod 777 /etc/loki/config/config.yaml
 # Set container to run sleep to use for debug
 CMD ["sh", "-c", "echo Received args: $@; sleep infinity"]
