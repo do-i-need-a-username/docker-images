@@ -130,6 +130,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Export Docker image to tarball 🗃️
+      - name: Save Docker image as tar
+        run: |
+          mkdir -p export
+          docker pull ${{ steps.meta.outputs.tags }}
+          docker save ${{ steps.meta.outputs.tags }} -o export/${{ env.APP_NAME }}.tar
+
+      # Upload tarball as artifact 🧳
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-image
+          path: export/${{ env.APP_NAME }}.tar
+          
       - name: Annotate job with docker pull commands
         run: |
           tags=$(echo $DOCKER_METADATA_OUTPUT_JSON| jq -r '.tags[]')
@@ -137,3 +151,12 @@ jobs:
           do
               echo "docker pull $tag" >> $GITHUB_STEP_SUMMARY
           done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 To import into WSL after downloading artifact:" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`powershell" >> $GITHUB_STEP_SUMMARY
+          echo "wsl --import <DistroName> C:\\WSL\\<DistroFolder> <DownloadedTarPath>.tar" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⬇️ Download the exported image from the 'Artifacts' section of this workflow run." >> $GITHUB_STEP_SUMMARY
+        
+        
