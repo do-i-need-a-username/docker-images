@@ -134,8 +134,9 @@ jobs:
       - name: Save Docker image as tar
         run: |
           mkdir -p export
-          docker pull ${{ steps.meta.outputs.tags }}
-          docker save ${{ steps.meta.outputs.tags }} -o export/${{ env.APP_NAME }}.tar
+           tag=$(echo $DOCKER_METADATA_OUTPUT_JSON | jq -r '.tags[0]')
+           docker pull $tag
+           docker save $tag -o export/${{ env.APP_NAME }}.tar
 
       # Upload tarball as artifact 🧳
       - name: Upload Docker image artifact
