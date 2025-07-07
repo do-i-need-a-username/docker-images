@@ -24,6 +24,8 @@ env:
   DOCKER_REPOSITORY: ${{ github.repository }}
   DOCKER_REGISTRY: 'ghcr.io'
 
+permissions:
+  contents: write
 
 jobs:
   matrix_prep:
