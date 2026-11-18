@@ -23,9 +23,9 @@ jobs:
     name: Hadolint Dockerfile linting
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Lint dockerfiles
       id: hadolint
-      uses: hadolint/hadolint-action@v3.1.0
+      uses: hadolint/hadolint-action@v3.5.0
       with:
         recursive: true
