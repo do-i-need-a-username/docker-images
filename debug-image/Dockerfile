@@ -51,13 +51,14 @@ vim \
 nano \
 # sudo for sudo stuff
 sudo \
-# common files for software-properties, ca-certificates, python3
-software-properties-common -y -qq
+# CA bundle for HTTPS (wget, go install). Replaces software-properties-common, dropped in Debian 13 (trixie)
+ca-certificates -y -qq
 
 # Install go and set path.
 COPY --from=golang:latest /usr/local/go/ /usr/local/go/
 ENV GOROOT=/usr/local/go/
-ENV GOPATH="${HOME}/go"
+# $HOME is not set at build time, so use the root user's home explicitly
+ENV GOPATH="/root/go"
 ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
 
 # lightweight and portable command-line YAML, JSON and XML processor. yq uses jq like syntax but works with yaml files as well as json, xml, properties, csv and tsv.

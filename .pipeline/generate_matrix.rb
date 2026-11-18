@@ -37,11 +37,12 @@ def generate_ruby_matrix(dockerfile_dir)
   end
 end
 
-# Generates a matrix of images build on a schedule
+# Generates a matrix of images build on a schedule.
+# Includes debug-image so the scheduled (no-cache) build picks up base image and package patches.
 #
 # @return [Hash] the github build matrix
 def schedule_matrix
-  {"include" => generate_ruby_matrix("ruby-image")}
+  default_matrix
 end
 
 # Generates a matrix from a workflow dispatch event

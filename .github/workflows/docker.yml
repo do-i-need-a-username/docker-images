@@ -5,7 +5,7 @@ on:
       branches:
         - main
     schedule:
-      # At 20:00 UTC everyday (roughly 06:00 AEST)
+      # At 20:00 UTC every Sunday (06:00 AEST Monday)
       - cron: '0 20 * * 0'
     workflow_dispatch:
       inputs:
@@ -43,7 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: matrix_prep
     permissions:
-      contents: read
+      # write needed to publish the image tar to a GitHub Release; job-level permissions replace the workflow-level ones
+      contents: write
       packages: write
       id-token: write
     strategy:
@@ -102,7 +103,7 @@ jobs:
       - name: Extract Docker metadata
         id: meta
         # uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        uses: docker/metadata-action@v4.6.0
+        uses: docker/metadata-action@v5
         with:
           # list of Docker images to use as base name for tags
           images: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKERFILE_DIR }}
@@ -120,7 +121,7 @@ jobs:
       # https://github.com/docker/build-push-action
       - name: Build and push ${{ env.APP_NAME }} Docker image 🐳
         id: build-and-push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./${{ env.DOCKERFILE_DIR }}/Dockerfile
@@ -148,7 +149,7 @@ jobs:
           path: export/${{ env.TAR_NAME }}
 
       - name: Upload image tar to public GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.APP_NAME }}-${{ env.APP_VERSION }}
           name: "WSL Image - ${{ env.APP_NAME }} ${{ env.APP_VERSION }}"
